@@ -1,7 +1,7 @@
 from playwright.sync_api import sync_playwright
 from app.schemas.jogo import JogoSchema
 
-def coletar_todos_os_jogos(pagina=None):
+def coletar_dados_validos_jogo(pagina=None):
     """
     Captura todos os jogos e odds visíveis no site da Bet365 (versão web simplificada).
     Se 'pagina' for fornecida, usa a instância já aberta do navegador.
