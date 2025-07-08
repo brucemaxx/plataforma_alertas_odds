@@ -12,6 +12,7 @@ from app.utils.normalizador import normalizador_mercado
 # 📦 Importações para banco de dados
 from app.database.db import SessionLocal
 from app.models.alerta import Alerta
+from sqlalchemy.exc import SQLAlchemyError
 
 from app.database.operacoes_alerta import salvar_alerta
 from datetime import datetime
@@ -175,23 +176,24 @@ def monitorar_jogos():
                             )
                             bot.send_message(chat_id=CHAT_ID, text=mensagem, parse_mode="Markdown")
                             alertas_enviados.add(chave_alerta)
+                            print("[ALERTA] Enviado:", chave_alerta)
 
-                            # 👉 Persistir no banco
-                            db = SessionLocal()
-                            novo_alerta = Alerta(
-                                time_1=dados['time_1'],
-                                time_2=dados['time_2'],
-                                mercado=dados['mercado'],
-                                odd=dados['odd']
-                            )
-                            db.add(novo_alerta)
-                            db.commit()
-                            db.close()
-
-                            print("[ALERTA] Enviado e salvo no banco:", chave_alerta)
-                        else:
-                            print("[IGNORADO] Alerta já enviado:", chave_alerta)
-                    else:
-                        print(f"[INFO] {dados['time_1']} x {dados['time_2']} | Odd {odd} abaixo do limite")
+                            # ✅ Salva no banco de dados
+                            try:
+                                db = SessionLocal()
+                                novo_alerta = Alerta(
+                                    time_1=dados["time_1"],
+                                    time_2=dados["time_2"],
+                                    mercado=dados["mercado"],
+                                    odd=dados["odd"]
+                                )
+                                db.add(novo_alerta)
+                                db.commit()
+                                db.refresh(novo_alerta)
+                                print(f"[DB] Alerta salvo no banco com ID: {novo_alerta.id}")
+                            except SQLAlchemyError as db_err:
+                                print(f"[DB ERRO] Falha ao salvar alerta no banco: {db_err}")
+                            finally:
+                                db.close()
                 except Exception as e:
                     print(f"[ERRO] Falha ao processar jogo: {e}")
