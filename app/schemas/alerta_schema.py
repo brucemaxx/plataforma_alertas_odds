@@ -10,4 +10,4 @@ class AlertaSchema(BaseModel):
     odd: str
 
     class Config:
-        orm_mode = True  # permite converter de SQLAlchemy para Pydantic
+        from_mode = True  # permite converter de SQLAlchemy para Pydantic

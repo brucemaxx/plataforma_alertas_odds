@@ -57,4 +57,12 @@ def get_jogo_valido(min_odd: float = Query(0.0, description="Odd mínima para fi
         "mensagem": f"A odd ({odd_valor}) esta abaixo do limite definido ({min_odd})."
     }
     
+@router.get("/alertas", response_model=list[AlertaResponse])
+def listar_alertas(db: Session = Depends(get_db)):
+    """
+    Lista todos os alertas armazenados no banco de dados.
+    """
+    alertas = db.query(AlertaModel).all()
+    return alertas
+
     
