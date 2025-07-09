@@ -3,11 +3,26 @@
 from sqlalchemy.orm import Session
 from app.models.alerta import Alerta
 from app.database.conexao import SessionLocal
+from datetime import datetime
 
 def salvar_alerta(dados_alerta: dict):
     """
     Salva um alerta no banco de dados se ele ainda não existir.
     :param dados_alerta: Dicionário com as chaves: time_1, time_2, mercado, odd, timestamp
+    """
+def salvar_alerta(db: Session, alerta_dados: dict):
+    alerta = Alerta(
+        time_1=alerta_dados["time_1"],
+        time_2=alerta_dados["time_2"],
+        mercado=alerta_dados["mercado"],
+        odd=alerta_dados["odd"],
+        data_envio=datetime.utcnow()
+    )
+    db.add(alerta)
+    db.commit()
+    db.refresh(alerta)
+    return alerta
+    
     """
     session: Session = SessionLocal()
     try:
@@ -31,3 +46,4 @@ def salvar_alerta(dados_alerta: dict):
         session.rollback()
     finally:
         session.close()
+    """

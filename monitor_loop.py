@@ -1,5 +1,5 @@
 # monitor_loop.py
-
+"""
 import time
 import os
 from telegram import Bot
@@ -37,6 +37,8 @@ INTERVALO = 60
 
 # 🚫 Armazena alertas já enviados para evitar duplicatas
 alertas_enviados = set()
+"""
+
 """
 def monitorar_jogos():
     '''
@@ -135,6 +137,7 @@ if __name__ == "__main__":
     monitorar_jogos()
 """
 
+"""
 from app.database.conexao import SessionLocal
 from app.models.alerta import Alerta
 
@@ -197,3 +200,71 @@ def monitorar_jogos():
                                 db.close()
                 except Exception as e:
                     print(f"[ERRO] Falha ao processar jogo: {e}")
+                    """
+                    
+# monitor_loop.py
+
+from app.database.db import SessionLocal
+from app.database.operacoes_alerta import salvar_alerta
+from telegram import Bot
+from datetime import datetime
+import os
+from dotenv import load_dotenv
+
+# Carregar variáveis do .env
+load_dotenv()
+
+
+
+# Configurar o bot do Telegram
+TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+
+print(f"TELEGRAM_TOKEN = {TELEGRAM_TOKEN}")
+print(f"TELEGRAM_CHAT_ID = {CHAT_ID}")
+
+
+bot = Bot(token=TELEGRAM_TOKEN)
+
+def enviar_alerta_telegram(alerta_dados: dict):
+    """Envia a mensagem formatada com os dados para o Telegram."""
+    mensagem = (
+        f"⚽ Alerta de Odds\n"
+        f"{alerta_dados['time_1']} x {alerta_dados['time_2']}\n"
+        f"Mercado: {alerta_dados['mercado']}\n"
+        f"Odd: {alerta_dados['odd']}"
+    )
+    bot.send_message(chat_id=CHAT_ID, text=mensagem)
+
+def monitorar_odds():
+    """Simula a captura de alerta e salva no banco + envia ao Telegram."""
+    db = SessionLocal()
+
+    # ⚠️ Substituir por alerta real do scraper
+    alerta_dados = {
+        "time_1": "Flamengo",
+        "time_2": "Palmeiras",
+        "mercado": "Mais de 2.5 gols",
+        "odd": "1.95",
+    }
+
+    try:
+        # Adiciona data de envio manualmente
+        alerta_dados["data_envio"] = datetime.utcnow()
+
+        # Salva no banco
+        salvar_alerta(db, alerta_dados)
+
+        # Envia para o Telegram
+        enviar_alerta_telegram(alerta_dados)
+
+        print("✅ Alerta salvo no banco e enviado para o Telegram!")
+
+    except Exception as e:
+        print(f"❌ Erro: {e}")
+
+    finally:
+        db.close()
+
+if __name__ == "__main__":
+    monitorar_odds()
