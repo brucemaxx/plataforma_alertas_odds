@@ -9,6 +9,7 @@ from sqlalchemy.orm import Session
 from app.database.conexao import SessionLocal
 from app.models.alerta import Alerta as AlertaModel
 from app.schemas.alerta import AlertaCreate, AlertaResponse
+from typing import List
 
 
 # Dependência para injetar a sessão do banco de dados
@@ -22,7 +23,27 @@ def get_db():
 
 router = APIRouter()
 
+
+
 @router.get("/jogos/validos", response_model=Union[JogoSchema, dict])
+
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
+        
+@router.get("/alertas", response_model=list[AlertaResponse])
+def listar_alertas(db: Session = Depends(get_db)):
+    """
+    Retorna todos os alertas salvos no banco de dados.
+    """
+    alertas = db.query(AlertaModel).all()
+    return alertas
+
+
+
 @router.post("/alerta", response_model=AlertaResponse)
 
 def criar_alerta(alerta: AlertaCreate, db: Session = Depends(get_db)):
@@ -57,12 +78,6 @@ def get_jogo_valido(min_odd: float = Query(0.0, description="Odd mínima para fi
         "mensagem": f"A odd ({odd_valor}) esta abaixo do limite definido ({min_odd})."
     }
     
-@router.get("/alertas", response_model=list[AlertaResponse])
-def listar_alertas(db: Session = Depends(get_db)):
-    """
-    Lista todos os alertas armazenados no banco de dados.
-    """
-    alertas = db.query(AlertaModel).all()
-    return alertas
+
 
     
