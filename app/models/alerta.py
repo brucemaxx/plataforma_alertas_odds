@@ -3,6 +3,7 @@
 from sqlalchemy import Column, Integer, String, Float, DateTime
 from sqlalchemy.orm import declarative_base
 from datetime import datetime
+from app.database.base import Base
 
 # Declarative base (a maioria das apps usa a mesma base importada de um lugar central)
 Base = declarative_base()
