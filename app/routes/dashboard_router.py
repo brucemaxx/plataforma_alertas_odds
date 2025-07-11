@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Depends
 from fastapi.templating import Jinja2Templates
 from app.database.db import SessionLocal
 from sqlalchemy.orm import Session
-from app.models.alerta import Alerta
+from app.models.alerta import Alerta, order_by
 
 
 
