@@ -1,17 +1,30 @@
-# app/db.py
+# No seu arquivo db.py ou em algum lugar onde você inicializa o SQLAlchemy
 
 from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Caminho do banco SQLite (você pode personalizar esse nome se quiser)
-DATABASE_URL = "sqlite:///alertas.db"
+# Assumindo que você já tem essas definições
+SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db" # Ou o caminho do seu banco de dados
 
-# Criação da engine
-engine = create_engine(DATABASE_URL, connect_args={"check_same_thread": False})
-
-# Criação da fábrica de sessões
+engine = create_engine(
+    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+Base = declarative_base() # Você provavelmente já tem isso definido em algum lugar
 
-# Base usada para os modelos
-Base = declarative_base()
+# Importe seus modelos aqui para que o Base saiba sobre eles
+# from app.models.alerta import Alerta # Se Alerta for definida em alerta.py e herdando de Base
+
+def create_db_tables():
+    # Isso cria todas as tabelas que herdam de Base
+    # Certifique-se de que seus modelos (como Alerta) estão importados
+    # antes de chamar create_all() para que o SQLAlchemy os reconheça.
+    print("Criando tabelas no banco de dados...")
+    Base.metadata.create_all(bind=engine)
+    print("Tabelas criadas com sucesso!")
+
+# Chame esta função na inicialização da sua aplicação
+# Por exemplo, no seu main.py, antes de iniciar o Uvicorn, ou em um script separado.
+# Exemplo simples para main.py:
+# from app.database.db import create_db_tables
+# create_db_tables()

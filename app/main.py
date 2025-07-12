@@ -23,6 +23,8 @@ app.add_middleware(
     allow_headers=["*"],  # Permite todos os cabeçalhos HTTP
 )
 
+
+
 # Adiciona o router do dashboard
 app.mount("/static", StaticFiles(directory="app/static"), name="static")
 
