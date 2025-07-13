@@ -1,30 +1,24 @@
-# No seu arquivo db.py ou em algum lugar onde você inicializa o SQLAlchemy
-
+# app/database/db.py
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-# Assumindo que você já tem essas definições
-SQLALCHEMY_DATABASE_URL = "sqlite:///./sql_app.db" # Ou o caminho do seu banco de dados
+# **Ajuste o caminho do banco de dados para coincidir com o nome do seu arquivo.**
+# Se você quer que o arquivo seja "alertas.db" na raiz do projeto:
+SQLALCHEMY_DATABASE_URL = "sqlite:///./alertas.db"
 
 engine = create_engine(
-    SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
+    SQLALCHEMY_DATABASE_URL,
+    connect_args={"check_same_thread": False} # Necessário para SQLite em FastAPI
 )
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
-Base = declarative_base() # Você provavelmente já tem isso definido em algum lugar
 
-# Importe seus modelos aqui para que o Base saiba sobre eles
-# from app.models.alerta import Alerta # Se Alerta for definida em alerta.py e herdando de Base
+Base = declarative_base()
 
-def create_db_tables():
-    # Isso cria todas as tabelas que herdam de Base
-    # Certifique-se de que seus modelos (como Alerta) estão importados
-    # antes de chamar create_all() para que o SQLAlchemy os reconheça.
-    print("Criando tabelas no banco de dados...")
-    Base.metadata.create_all(bind=engine)
-    print("Tabelas criadas com sucesso!")
-
-# Chame esta função na inicialização da sua aplicação
-# Por exemplo, no seu main.py, antes de iniciar o Uvicorn, ou em um script separado.
-# Exemplo simples para main.py:
-# from app.database.db import create_db_tables
-# create_db_tables()
+# A função get_db para as dependências do FastAPI (você já deve ter isso)
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()

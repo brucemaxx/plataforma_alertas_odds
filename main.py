@@ -33,5 +33,5 @@ app.include_router(dashboard_router.router, tags=["dashboard"])  # Adiciona o ro
 app.include_router(alerta_router.router, prefix="/alertas", tags=["Alertas"]) # Adiciona o router de alertas
 
 @app.get("/")
-def raiz():
+def read_root():
     return {"mensagem": "API de Alertas de Odds no ar!"}
