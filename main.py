@@ -14,4 +14,4 @@ app.include_router(dashboard_router.router)
 # Exemplo de uma rota raiz (opcional)
 @app.get("/")
 def read_root():
-    return {"message": "Bem-vindo à Plataforma de Alertas de Odds!"}
+    return {f"Bem-vindo à Plataforma de Alertas de Odds!"}
