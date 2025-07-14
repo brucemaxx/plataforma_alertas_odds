@@ -8,14 +8,12 @@ export default function Dashboard() {
     data: ""
   });
 
-  // Estatísticas
   const [stats, setStats] = useState({
     total: 0,
     mediaOdds: 0,
     porMercado: {}
   });
 
-  // Carrega dados do backend
   useEffect(() => {
     async function fetchData() {
       try {
@@ -31,7 +29,6 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
-  // Calcula estatísticas simples
   const calcularEstatisticas = (dados) => {
     const total = dados.length;
     const somaOdds = dados.reduce((acc, alerta) => acc + parseFloat(alerta.odd), 0);
@@ -46,7 +43,6 @@ export default function Dashboard() {
     setStats({ total, mediaOdds, porMercado });
   };
 
-  // Filtro aplicado ao frontend
   const alertasFiltrados = alertas.filter((a) => {
     return (
       (filtros.time === "" ||
