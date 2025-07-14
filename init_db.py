@@ -1,24 +1,25 @@
-# init_db.py (na raiz do projeto)
+# init_db.py (LOCALIZAÇÃO: C:\Users\Windows\OneDrive\Área de Trabalho\plataforma_alertas_odds\init_db.py)
 
 # Importe a engine e a Base do seu arquivo db.py
-# O caminho 'app.database.db' funciona porque este script será executado da raiz,
-# e 'app' será reconhecido como um pacote.
+# O Python consegue resolver 'app.database.db' porque este script está na raiz do projeto.
 from app.database.db import engine, Base
 
-# **IMPORTANTE:** Importe TODOS os seus módulos de modelo aqui.
-# Isso garante que a Base conheça todas as classes que devem ser tabelas no banco de dados.
-# Para o seu caso, certifique-se de que app.models.alerta está importado.
-from app.models import alerta # Isso faz com que a definição da classe Alerta seja carregada
+# *** IMPORTANTE ***
+# Você deve importar TODOS os seus módulos de modelo AQUI!
+# Cada módulo de modelo que contém uma classe que herda de `Base`
+# precisa ser importado para que `Base.metadata.create_all()` saiba
+# que deve criar uma tabela para essa classe.
+from app.models import alerta # Isto carrega a definição da classe Alerta na memória
 
 def initialize_database():
     """
     Cria todas as tabelas definidas nos modelos no banco de dados.
     Esta função deve ser chamada apenas uma vez para configurar o DB.
     """
-    print("Iniciando a criação/verificação das tabelas do banco de dados...")
-    # Base.metadata.create_all() cria as tabelas se elas não existirem.
+    print("\n--- Iniciando a criação/verificação das tabelas do banco de dados ---")
+    # Este comando cria as tabelas se elas AINDA NÃO EXISTIREM no arquivo DB.
     Base.metadata.create_all(bind=engine)
-    print("Tabelas do banco de dados verificadas/criadas com sucesso.")
+    print("--- Tabelas do banco de dados verificadas/criadas com sucesso ---\n")
 
 if __name__ == "__main__":
     initialize_database()

@@ -23,4 +23,4 @@ def get_db():
 @router.get("/dashboard", response_class=HTMLResponse)
 def exibir_dashboard(request: Request, db: Session = Depends(get_db)):
     alertas = db.query(Alerta).order_by(Alerta.data_envio.desc()).all()
-    return templates.TemplateResponse("dasboard.html", {"request": request, "alertas": alertas})
+    return templates.TemplateResponse("dashboard.html", {"request": request, "alertas": alertas})
