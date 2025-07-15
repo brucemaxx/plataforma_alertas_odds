@@ -4,6 +4,7 @@ import Filtros from './Filtros';
 import TabelaAlertas from './TabelaAlertas';
 import Estatisticas from './Estatisticas';
 import Paginacao from './Paginacao'; // ✅ importar novo componente
+import GraficoEstatisticas from './GraficoEstatisticas' // Importar o novo componente de gráfico
 
 const Dashboard = () => {
   const [alertas, setAlertas] = useState([]);
@@ -54,6 +55,8 @@ const Dashboard = () => {
       <Filtros filtros={filtros} setFiltros={setFiltros} />
 
       <Estatisticas alertas={alertasFiltrados} />
+      
+      <GraficoEstatisticas alertas={alertasFiltrados}/>
 
       <TabelaAlertas alertas={alertasPaginados} />
 
