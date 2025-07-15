@@ -10,8 +10,14 @@ const Dashboard = () => {
   const [alertas, setAlertas] = useState([]);
   const [filtros, setFiltros] = useState({ time: '', mercado: '', data: '' });
   
+  const [ordenacao, setOrdenacao] = useState({ campo: 'data', direcao: 'desc' });
+
   const [paginaAtual, setPaginaAtual] = useState(1);
   const alertasPorPagina = 10;
+
+  // estados de ordenação
+  const [ordenarPor, setOdenarPor] = useState('');
+  const [ordemCrescente, setOrdemCrescente] =useState(true);
 
   useEffect(() => {
     const fetchAlertas = async () => {
@@ -36,9 +42,19 @@ const Dashboard = () => {
     );
   });
 
+  // ORDENAR alertas após aplicar os filtros
+  const alertasOrdenados = [...alertasFiltrados].sort((a, b) => {
+    const { campo, direcao } = ordenacao;
+
+    if(a[campo] < b[campo]) return direcao === 'asc' ? -1 : 1;
+    if(a[campo] > b[campo]) return direcao === 'asc' ? 1 : -1;
+    return 0;
+  });
+
+
   const indexInicial = (paginaAtual - 1) * alertasPorPagina;
   const indexFinal = indexInicial + alertasPorPagina;
-  const alertasPaginados = alertasFiltrados.slice(indexInicial, indexFinal);
+  const alertasPaginados = alertasOrdenados.slice(indexInicial, indexFinal);
 
   const totalPaginas = Math.ceil(alertasFiltrados.length / alertasPorPagina);
 
@@ -55,7 +71,7 @@ const Dashboard = () => {
       <Filtros filtros={filtros} setFiltros={setFiltros} />
 
       <Estatisticas alertas={alertasFiltrados} />
-      
+
       <GraficoEstatisticas alertas={alertasFiltrados}/>
 
       <TabelaAlertas alertas={alertasPaginados} />

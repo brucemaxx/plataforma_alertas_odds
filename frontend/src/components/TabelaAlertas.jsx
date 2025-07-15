@@ -1,16 +1,37 @@
 // src/components/TabelaAlertas.jsx
+<TabelaAlertas
+  alertas={alertasPaginados}
+  ordenacao={ordenacao}
+  setOrdenacao={setOrdenacao}
+/>
 
-const TabelaAlertas = ({ alertas }) => {
+const TabelaAlertas = ({ alertas, ordenacao, setOrdenacao }) => {
+  const alterarordenacao = (campo) => {
+    if (ordenacao.campo === campo) {
+      setOrdenacao({
+        campo,
+        direcao: ordenacao.direcao === 'asc' ? 'desc' : 'asc',
+      });
+    } else {
+      setOrdenacao({ campo, direcao: 'asc' });
+    }
+  };
+
+  const iconeOrdenacao = (campo) => {
+    if (ordenacao.campo !== campo) return 'arrow-up-down';
+    return ordenacao.direcao === 'asc' ? 'arrow-up' : 'arrow-down';
+  };
+
   return (
     <div className="overflow-x-auto">
       <table className="min-w-full bg-white shadow rounded-md">
         <thead className="bg-gray-200">
           <tr>
-            <th className="p-2">Time</th>
-            <th className="p-2">Mercado</th>
-            <th className="p-2">Odd</th>
-            <th className="p-2">Data</th>
-            <th className="p-2">Hora</th>
+            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('time')}>Time</th>
+            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('mercado')}>Mercado</th>
+            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('odd')}>Odd</th>
+            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('data')}>Data</th>
+            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('hora')}>Hora</th>
           </tr>
         </thead>
         <tbody>
