@@ -1,10 +1,4 @@
 // src/components/TabelaAlertas.jsx
-<TabelaAlertas
-  alertas={alertasPaginados}
-  ordenacao={ordenacao}
-  setOrdenacao={setOrdenacao}
-/>
-
 const TabelaAlertas = ({ alertas, ordenacao, setOrdenacao }) => {
   const alterarordenacao = (campo) => {
     if (ordenacao.campo === campo) {
@@ -18,8 +12,8 @@ const TabelaAlertas = ({ alertas, ordenacao, setOrdenacao }) => {
   };
 
   const iconeOrdenacao = (campo) => {
-    if (ordenacao.campo !== campo) return 'arrow-up-down';
-    return ordenacao.direcao === 'asc' ? 'arrow-up' : 'arrow-down';
+    if (ordenacao.campo !== campo) return '↕️';
+    return ordenacao.direcao === 'asc' ? '⬆️' : '⬇️';
   };
 
   return (
@@ -27,11 +21,21 @@ const TabelaAlertas = ({ alertas, ordenacao, setOrdenacao }) => {
       <table className="min-w-full bg-white shadow rounded-md">
         <thead className="bg-gray-200">
           <tr>
-            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('time')}>Time</th>
-            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('mercado')}>Mercado</th>
-            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('odd')}>Odd</th>
-            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('data')}>Data</th>
-            <th className="p-2 cursos-pointer"  onClick={() => alterarordenacao('hora')}>Hora</th>
+            <th className="p-2 cursor-pointer" onClick={() => alterarordenacao('time')}>
+              Time {iconeOrdenacao('time')}
+            </th>
+            <th className="p-2 cursor-pointer" onClick={() => alterarordenacao('mercado')}>
+              Mercado {iconeOrdenacao('mercado')}
+            </th>
+            <th className="p-2 cursor-pointer" onClick={() => alterarordenacao('odd')}>
+              Odd {iconeOrdenacao('odd')}
+            </th>
+            <th className="p-2 cursor-pointer" onClick={() => alterarordenacao('data')}>
+              Data {iconeOrdenacao('data')}
+            </th>
+            <th className="p-2 cursor-pointer" onClick={() => alterarordenacao('hora')}>
+              Hora {iconeOrdenacao('hora')}
+            </th>
           </tr>
         </thead>
         <tbody>

@@ -4,7 +4,7 @@ import Filtros from './Filtros';
 import TabelaAlertas from './TabelaAlertas';
 import Estatisticas from './Estatisticas';
 import Paginacao from './Paginacao'; // ✅ importar novo componente
-import GraficoEstatisticas from './GraficoEstatisticas' // Importar o novo componente de gráfico
+import GraficoEstatisticas from './GraficoEstatisticas'; // Importar o novo componente de gráfico
 
 const Dashboard = () => {
   const [alertas, setAlertas] = useState([]);
@@ -64,6 +64,33 @@ const Dashboard = () => {
     }
   };
 
+  const exportarParaCSV = () => {
+  const colunas = ['Time', 'Mercado', 'Odd', 'Data', 'Hora'];
+
+  const linhas = alertasOrdenados.map((alerta) => [
+    alerta.time,
+    alerta.mercado,
+    alerta.odd,
+    alerta.data,
+    alerta.hora,
+  ]);
+
+  const conteudoCSV = [
+    colunas.join(','),           // Cabeçalho
+    ...linhas.map((linha) => linha.join(',')) // Linhas de dados
+  ].join('\n');
+
+  const blob = new Blob([conteudoCSV], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = `alertas_${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+};
+
+
   return (
     <div className="p-4 space-y-6">
       <h1 className="text-3xl font-bold text-center">Dashboard de Alertas</h1>
@@ -74,7 +101,22 @@ const Dashboard = () => {
 
       <GraficoEstatisticas alertas={alertasFiltrados}/>
 
-      <TabelaAlertas alertas={alertasPaginados} />
+      <div className="flex justify-end">
+        <button
+          onClick={exportarParaCSV}
+          className="px-4 py-2 bg-green-500 text-white font-medium rounded hover:bg-green-600 transition"
+        >
+        Exportar CSV
+        </button>
+      </div>
+
+
+
+      <TabelaAlertas
+       alertas={alertasPaginados}
+       ordenacao={ordenacao}
+       setOrdenacao={setOrdenacao}
+      />
 
       {/* ✅ Componente isolado de paginação */}
       <Paginacao
