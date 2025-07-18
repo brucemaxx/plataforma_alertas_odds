@@ -1,15 +1,15 @@
 from pydantic import BaseModel
 
 
-class UserCreate():
+class UserCreate(BaseModel):
     username: str
     password: str
     
-class UserLogin():
+class UserLogin(BaseModel):
     username: str
     password: str    
     
-class userOut():
+class userOut(BaseModel):
     id: int
     username: str
     
