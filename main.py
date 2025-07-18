@@ -1,7 +1,10 @@
 # app/main.py
 from fastapi import FastAPI
 from app.routes import dashboard_router
+from app.routes import auth
+from app.database.conexao import engine, Base
 # from app.database.db import create_db_tables # REMOVA ou COMENTE esta linha!
+
 
 app = FastAPI()
 
@@ -10,6 +13,13 @@ app.include_router(dashboard_router.router)
 
 # NENHUMA CHAMADA PARA initialize_database() OU create_db_tables() AQUI!
 # A criação do DB é feita APENAS pelo script init_db.py que você rodou manualmente.
+
+
+# Cria tabelas
+Base.metadata.create_all(bind=engine)
+
+# Acionando Rotas
+app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 
 # Exemplo de uma rota raiz (opcional)
 @app.get("/")
