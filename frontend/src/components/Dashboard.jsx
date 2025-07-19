@@ -5,6 +5,8 @@ import TabelaAlertas from './TabelaAlertas';
 import Estatisticas from './Estatisticas';
 import Paginacao from './Paginacao'; // ✅ importar novo componente
 import GraficoEstatisticas from './GraficoEstatisticas'; // Importar o novo componente de gráfico
+import axios from 'axios';
+
 
 const Dashboard = () => {
   const [alertas, setAlertas] = useState([]);
@@ -128,4 +130,32 @@ const Dashboard = () => {
   );
 };
 
-export default Dashboard;
+// export default Dashboard;
+
+export default function Dashboard({token}) {
+  const [mensagem, setMensagem] = useState('');
+
+  useEffect(() => {
+    const verificarToken = async () => {
+      try {
+        const response = await axios.get('http://localhost:8000/verify_token', {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        });
+        setMensagem(response.data.message);
+      } catch (error) {
+        setMensagem("Acesso negado");
+      }
+    };
+
+    fetchData();
+  }, [token]);
+
+  return (
+    <div className="p-4 text-lg font-semibold text-center">
+      {mensagem}
+    </div>
+  );
+}
+
