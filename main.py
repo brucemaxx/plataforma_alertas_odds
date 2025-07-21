@@ -16,7 +16,7 @@ app.include_router(dashboard_router.router)
 
 
 # Cria tabelas
-Base.metadata.create_all(bind=engine)
+#Base.metadata.create_all(bind=engine)
 
 # Acionando Rotas
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
