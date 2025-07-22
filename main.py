@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from app.routes import dashboard_router
 from app.routes import auth
 from app.database.conexao import engine, Base
+from app.utils.security import get_current_user
 # from app.database.db import create_db_tables # REMOVA ou COMENTE esta linha!
 
 
