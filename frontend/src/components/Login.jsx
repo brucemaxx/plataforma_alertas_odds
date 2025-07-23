@@ -1,5 +1,5 @@
 // src/components/Login.jsx
-
+import {useNavigate} from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -8,6 +8,9 @@ export default function Login({ setToken }) {
     username: "",
     password: "",
   });
+
+  const navigate = useNavigate();
+ 
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -26,6 +29,8 @@ export default function Login({ setToken }) {
       const token = response.data.access_token;
       localStorage.setItem("token", token);
       setToken(token);
+
+       navigate("/login");
     } catch (err) {
       const mensagemErro = err.response?.data?.detail || "Erro no login. Tente novamente.";
       alert(mensagemErro);

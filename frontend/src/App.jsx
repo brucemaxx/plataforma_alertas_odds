@@ -1,37 +1,26 @@
-import Login from "./components/Login";
+// src/App.jsx
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Dashboard from "./components/Dashboard";
+import Login from "./components/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   return (
-    <div className="bg-gray-50 min-h-screen">
-      <Dashboard />
-    </div>
-  );
-}
-
-// Controlando o estado do token de autenticação.
-// Se o token estiver presente, renderiza o Dashboard, caso contrário, renderiza o Login.
-function App() {
-  const [token, setToken] = userState(localStorage.getItem("token"));
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setToken(null);
-  };
-
-  return (
-    <div>
-      {token ? (
-        < >
-        <button onClick={handleLogout} className="m-4 bg-red-500 text-white p-2 rounded hover:bg-red-600">
-          Sair
-        </button>
-        <Dashboard token={token} />
-        </>
-      ) : (
-        <Login setToken={setToken} />
-      )}
-    </div>
+    <Router>
+      <Routes>
+        <Route path="/login" element={<Login />} />
+        
+        {/* Rota protegida */}
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
+      </Routes>
+    </Router>
   );
 }
 
