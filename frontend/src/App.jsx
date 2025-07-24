@@ -1,27 +1,27 @@
 // src/App.jsx
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Dashboard from "./components/Dashboard";
+import { useState } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./components/Login";
-import ProtectedRoute from "./components/ProtectedRoute";
+import Dashboard from "./components/Dashboard";
 
-function App() {
+export default function App() {
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
+
   return (
-    <Router>
+    <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<Login />} />
-        
-        {/* Rota protegida */}
         <Route
           path="/"
+          element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
+        />
+        <Route path="/login" element={<Login setToken={setToken} />} />
+        <Route
+          path="/dashboard"
           element={
-            <ProtectedRoute>
-              <Dashboard />
-            </ProtectedRoute>
+            token ? <Dashboard token={token} setToken={setToken} /> : <Navigate to="/login" />
           }
         />
       </Routes>
-    </Router>
+    </BrowserRouter>
   );
 }
-
-export default App;

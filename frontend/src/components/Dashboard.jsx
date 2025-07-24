@@ -1,13 +1,13 @@
-// src/components/Dashboard.jsx
 import { useState, useEffect } from 'react';
 import Filtros from './Filtros';
 import TabelaAlertas from './TabelaAlertas';
 import Estatisticas from './Estatisticas';
 import Paginacao from './Paginacao';
 import GraficoEstatisticas from './GraficoEstatisticas';
+import LogoutButton from './LogoutButton'; // ✅ Importação do botão
 import axios from 'axios';
 
-export default function Dashboard({ token }) {
+export default function Dashboard({ token, setToken }) {
   const [alertas, setAlertas] = useState([]);
   const [filtros, setFiltros] = useState({ time: '', mercado: '', data: '' });
   const [ordenacao, setOrdenacao] = useState({ campo: 'data', direcao: 'desc' });
@@ -15,7 +15,7 @@ export default function Dashboard({ token }) {
   const [autorizado, setAutorizado] = useState(false);
   const alertasPorPagina = 10;
 
-  // Verificar se o token é válido
+  // 🔐 Verificar se o token é válido
   useEffect(() => {
     const verificarToken = async () => {
       try {
@@ -37,7 +37,7 @@ export default function Dashboard({ token }) {
     verificarToken();
   }, [token]);
 
-  // Buscar dados de alertas
+  // 📦 Buscar dados de alertas
   useEffect(() => {
     const fetchAlertas = async () => {
       try {
@@ -65,7 +65,7 @@ export default function Dashboard({ token }) {
     );
   }
 
-  // Filtro
+  // 🔎 Filtro
   const alertasFiltrados = alertas.filter((alerta) => {
     const { time, mercado, data } = filtros;
     return (
@@ -75,7 +75,7 @@ export default function Dashboard({ token }) {
     );
   });
 
-  // Ordenação
+  // 🔃 Ordenação
   const alertasOrdenados = [...alertasFiltrados].sort((a, b) => {
     const { campo, direcao } = ordenacao;
     if (a[campo] < b[campo]) return direcao === 'asc' ? -1 : 1;
@@ -94,6 +94,7 @@ export default function Dashboard({ token }) {
     }
   };
 
+  // 📤 Exportar para CSV
   const exportarParaCSV = () => {
     const colunas = ['Time', 'Mercado', 'Odd', 'Data', 'Hora'];
     const linhas = alertasOrdenados.map((a) => [
@@ -119,12 +120,18 @@ export default function Dashboard({ token }) {
 
   return (
     <div className="p-4 space-y-6">
-      <h1 className="text-3xl font-bold text-center">Dashboard de Alertas</h1>
+      {/* Cabeçalho com Título e Botão de Logout */}
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-center">Dashboard de Alertas</h1>
+        <LogoutButton setToken={setToken} />
+      </div>
 
+      {/* Filtros, Estatísticas e Gráficos */}
       <Filtros filtros={filtros} setFiltros={setFiltros} />
       <Estatisticas alertas={alertasFiltrados} />
       <GraficoEstatisticas alertas={alertasFiltrados} />
 
+      {/* Botão de Exportar */}
       <div className="flex justify-end">
         <button
           onClick={exportarParaCSV}
@@ -134,12 +141,12 @@ export default function Dashboard({ token }) {
         </button>
       </div>
 
+      {/* Tabela de Alertas e Paginação */}
       <TabelaAlertas
         alertas={alertasPaginados}
         ordenacao={ordenacao}
         setOrdenacao={setOrdenacao}
       />
-
       <Paginacao
         paginaAtual={paginaAtual}
         totalPaginas={totalPaginas}
