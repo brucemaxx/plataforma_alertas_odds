@@ -4,8 +4,9 @@ import TabelaAlertas from './TabelaAlertas';
 import Estatisticas from './Estatisticas';
 import Paginacao from './Paginacao';
 import GraficoEstatisticas from './GraficoEstatisticas';
-import LogoutButton from './LogoutButton'; // ✅ Importação do botão
+import LogoutButton from './LogoutButton';
 import axios from 'axios';
+import jwt_decode from 'jwt-decode'; // ✅ Importa função para decodificar o token
 
 export default function Dashboard({ token, setToken }) {
   const [alertas, setAlertas] = useState([]);
@@ -13,19 +14,25 @@ export default function Dashboard({ token, setToken }) {
   const [ordenacao, setOrdenacao] = useState({ campo: 'data', direcao: 'desc' });
   const [paginaAtual, setPaginaAtual] = useState(1);
   const [autorizado, setAutorizado] = useState(false);
+  const [nomeUsuario, setNomeUsuario] = useState(''); // ✅ Estado para exibir o nome do usuário
   const alertasPorPagina = 10;
 
-  // 🔐 Verificar se o token é válido
+  // 🔐 Verifica se o token é válido
   useEffect(() => {
     const verificarToken = async () => {
       try {
         const response = await axios.get('http://localhost:8000/verify_token', {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
+
         if (response.data.message === 'Token válido') {
           setAutorizado(true);
+
+          // ✅ Extrai nome do usuário do token
+          const decoded = jwt_decode(token);
+          setNomeUsuario(decoded.sub || 'Usuário');
         } else {
           setAutorizado(false);
         }
@@ -37,14 +44,14 @@ export default function Dashboard({ token, setToken }) {
     verificarToken();
   }, [token]);
 
-  // 📦 Buscar dados de alertas
+  // 📦 Busca dados dos alertas
   useEffect(() => {
     const fetchAlertas = async () => {
       try {
         const response = await axios.get('http://localhost:8000/alertas', {
           headers: {
-            Authorization: `Bearer ${token}`
-          }
+            Authorization: `Bearer ${token}`,
+          },
         });
         setAlertas(response.data);
       } catch (error) {
@@ -65,7 +72,7 @@ export default function Dashboard({ token, setToken }) {
     );
   }
 
-  // 🔎 Filtro
+  // 🔎 Aplica os filtros
   const alertasFiltrados = alertas.filter((alerta) => {
     const { time, mercado, data } = filtros;
     return (
@@ -75,7 +82,7 @@ export default function Dashboard({ token, setToken }) {
     );
   });
 
-  // 🔃 Ordenação
+  // 🔃 Ordena os alertas
   const alertasOrdenados = [...alertasFiltrados].sort((a, b) => {
     const { campo, direcao } = ordenacao;
     if (a[campo] < b[campo]) return direcao === 'asc' ? -1 : 1;
@@ -83,6 +90,7 @@ export default function Dashboard({ token, setToken }) {
     return 0;
   });
 
+  // 📄 Paginação
   const indexInicial = (paginaAtual - 1) * alertasPorPagina;
   const indexFinal = indexInicial + alertasPorPagina;
   const alertasPaginados = alertasOrdenados.slice(indexInicial, indexFinal);
@@ -120,18 +128,21 @@ export default function Dashboard({ token, setToken }) {
 
   return (
     <div className="p-4 space-y-6">
-      {/* Cabeçalho com Título e Botão de Logout */}
+      {/* 🔝 Cabeçalho com saudação e logout */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold text-center">Dashboard de Alertas</h1>
+        <div>
+          <h1 className="text-3xl font-bold">Dashboard de Alertas</h1>
+          <p className="text-gray-600 text-sm">Bem-vindo, {nomeUsuario}</p>
+        </div>
         <LogoutButton setToken={setToken} />
       </div>
 
-      {/* Filtros, Estatísticas e Gráficos */}
+      {/* 🎯 Filtros, Estatísticas e Gráfico */}
       <Filtros filtros={filtros} setFiltros={setFiltros} />
       <Estatisticas alertas={alertasFiltrados} />
       <GraficoEstatisticas alertas={alertasFiltrados} />
 
-      {/* Botão de Exportar */}
+      {/* 📥 Botão de Exportar CSV */}
       <div className="flex justify-end">
         <button
           onClick={exportarParaCSV}
@@ -141,12 +152,14 @@ export default function Dashboard({ token, setToken }) {
         </button>
       </div>
 
-      {/* Tabela de Alertas e Paginação */}
+      {/* 📊 Tabela de alertas */}
       <TabelaAlertas
         alertas={alertasPaginados}
         ordenacao={ordenacao}
         setOrdenacao={setOrdenacao}
       />
+
+      {/* 📚 Paginação */}
       <Paginacao
         paginaAtual={paginaAtual}
         totalPaginas={totalPaginas}
