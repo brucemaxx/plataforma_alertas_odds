@@ -6,7 +6,7 @@ import Paginacao from './Paginacao';
 import GraficoEstatisticas from './GraficoEstatisticas';
 import LogoutButton from './LogoutButton';
 import axios from 'axios';
-import jwt_decode from 'jwt-decode'; // ✅ Importa função para decodificar o token
+import {jwtDecode}from 'jwt-decode'; // ✅ Importa função para decodificar o token
 
 export default function Dashboard({ token, setToken }) {
   const [alertas, setAlertas] = useState([]);
@@ -31,7 +31,7 @@ export default function Dashboard({ token, setToken }) {
           setAutorizado(true);
 
           // ✅ Extrai nome do usuário do token
-          const decoded = jwt_decode(token);
+          const decoded = jwtDecode(token);
           setNomeUsuario(decoded.sub || 'Usuário');
         } else {
           setAutorizado(false);
