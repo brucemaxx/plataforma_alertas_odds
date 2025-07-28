@@ -1,5 +1,4 @@
-// src/components/Login.jsx
-import {useNavigate} from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
 
@@ -10,70 +9,57 @@ export default function Login({ setToken }) {
   });
 
   const navigate = useNavigate();
- 
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
-    setCredentials((prev) => ({ ...prev, [name]: value }));
+    setCredentials({ ...credentials, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
-      const response = await axios.post("http://localhost:8000/auth/login", {
-        username: credentials.username,
-        password: credentials.password,
-      });
-
-      const token = response.data.access_token;
-      localStorage.setItem("token", token);
-      setToken(token);
-
-       navigate("/login");
-    } catch (err) {
-      const mensagemErro = err.response?.data?.detail || "Erro no login. Tente novamente.";
-      alert(mensagemErro);
+      const response = await axios.post("http://127.0.0.1:8000/login", credentials);
+      setToken(response.data.access_token);
+      navigate("/dashboard");
+    } catch (error) {
+      alert("Credenciais inválidas");
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 max-w-md mx-auto mt-10 bg-white rounded-xl shadow"
-    >
-      <h2 className="text-xl font-bold mb-4 text-center">Login</h2>
-
-      <input
-        type="text"
-        name="username"
-        placeholder="Usuário"
-        value={credentials.username}
-        onChange={handleChange}
-        required
-        autoComplete="username"
-        aria-label="Usuário"
-        className="block w-full mb-3 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-
-      <input
-        type="password"
-        name="password"
-        placeholder="Senha"
-        value={credentials.password}
-        onChange={handleChange}
-        required
-        autoComplete="current-password"
-        aria-label="Senha"
-        className="block w-full mb-4 p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
-      />
-
-      <button
-        type="submit"
-        className="w-full bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-      >
-        Entrar
-      </button>
-    </form>
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white shadow-md rounded p-8 w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-800">Login</h2>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Usuário</label>
+            <input
+              type="text"
+              name="username"
+              value={credentials.username}
+              onChange={handleChange}
+              className="mt-1 w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-sm font-medium text-gray-700">Senha</label>
+            <input
+              type="password"
+              name="password"
+              value={credentials.password}
+              onChange={handleChange}
+              className="mt-1 w-full px-3 py-2 border rounded shadow-sm focus:outline-none focus:ring focus:border-blue-300"
+              required
+            />
+          </div>
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 px-4 rounded hover:bg-blue-700 transition"
+          >
+            Entrar
+          </button>
+        </form>
+      </div>
+    </div>
   );
 }
