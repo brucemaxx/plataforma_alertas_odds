@@ -14,12 +14,12 @@ export default function LogoutButton({ setToken }) {
     navigate("/login");
   };
 
-  return (
-    <button
-      onClick={handleLogout}
-      className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl shadow-md transition duration-200"
-    >
-      Sair
-    </button>
-  );
+  //return (
+  //  <button
+  //    onClick={handleLogout}
+  //    className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-xl shadow-md transition duration-200"
+  //  >
+  //    Sair
+  //  </button>
+  //);
 }

@@ -25,6 +25,7 @@ def listar_alertas(db: Session = Depends(get_db)):
     alertas = db.query(Alerta).all()
     return alertas
 
-@router.get("/protegida")
-def rota_segura(usuario: User = Depends(get_current_user)):
-    return {"msg": f"Olá,{usuario.username}. Você está autenticado!"}
+
+#@router.get("/protegida")
+#def rota_segura(usuario: User = Depends(get_current_user)):
+    #return {"msg": f"Olá,{usuario.username}. Você está #autenticado!"}

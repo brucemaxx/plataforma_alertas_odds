@@ -5,9 +5,9 @@ const ProtectedRoute = ({children}) => {
     const token = localStorage.getItem("token");
 
     // Se não houver token, rediriciona para a tela de login
-    if (!token) {
-        return <Navigate to="/login" replace/>;
-    }
+   // if (!token) {
+   //     return <Navigate to="/login" replace/>;
+   // }
 
     // Se houver token, exibe o componente filho (ex: dashboard)
     return children;
