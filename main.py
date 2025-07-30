@@ -1,7 +1,7 @@
 # app/main.py
 from fastapi import FastAPI
 from app.routes import dashboard_router
-from app.routes import auth
+# from app.routes import auth
 from app.database.conexao import engine, Base
 from app.utils.security import get_current_user
 # from app.database.db import create_db_tables # REMOVA ou COMENTE esta linha!
@@ -20,7 +20,7 @@ app.include_router(dashboard_router.router)
 #Base.metadata.create_all(bind=engine)
 
 # Acionando Rotas
-app.include_router(auth.router, prefix="/auth", tags=["Auth"])
+# app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 
 # Exemplo de uma rota raiz (opcional)
 @app.get("/")
