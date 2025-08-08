@@ -1,20 +1,22 @@
 // src/App.jsx
-import { useState } from "react";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+// import { useState } from "react";
+import { BrowserRouter as Routes, Route, Navigate } from "react-router-dom";
 // import Login from "./components/Login";
-// import Dashboard from "./components/Dashboard";
+import Dashboard from "./components/Dashboard";
 
 export default function App() {
-  const [token, setToken] = useState(localStorage.getItem("token") || "");
+  // const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   return (
     <BrowserRouter>
       <Routes>
-        {/* Acesso direto ao dashboard */}
-        <Route
-          path="/"
-          element={token ? <Navigate to="/dashboard" /> : <Navigate to="/login" />}
-        />
+
+        {/* Redireciona a raiz para o dashboard*/}
+        <Route path="/" element={<Navigate to="/dashboard" /> }/>
+
+        {/* Rota para o Dashboard */}  
+        <Route path="/dashboard" element={<Dashboard />} />
+
 
 
         {/* Rotas para Login e Dashboard */}
