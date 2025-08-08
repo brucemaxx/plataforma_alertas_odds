@@ -1,6 +1,6 @@
 // src/App.jsx
 // import { useState } from "react";
-import { BrowserRouter as Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 // import Login from "./components/Login";
 import Dashboard from "./components/Dashboard";
 
